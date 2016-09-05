@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Pictionary</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" type="text/css" href="css/style.css"/>
+<link href="https://fonts.googleapis.com/css?family=Baloo+Tamma|Roboto" rel="stylesheet">
+</head>
+<body>
+<!-- JS -->
+<script src="//code.jquery.com/jquery-2.1.0.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="main.js"></script>
+
+<div id="main">
+    <div id="title-box"> 
+        <img id="left-pencil" src="../images/leftpencil.png"></img>
+        <p id="title">DRAW FOR ME</p>
+        <img id="right-pencil" src="../images/rightpencil.png"></img>
+    </div>
+    <div id="the-user"> </div>
+    <div id="user-name"> 
+        <div id="enter-username"> Enter username: </div>
+        <div id="user-input"> <input id="nickname" type="text"> <input type="submit" id="accept" value="User Name"> </div>
+    </div>
+    <div id="game-board">
+        <div id="users-connected">
+            <ul id="usersList">
+                <li id="first"> Users Connected </li>
+            </ul>
+        </div>
+        <div id="inner-game-board">
+            <canvas id="canvas"></canvas>
+            <div id="color-choices">
+                <div id="black" class="active"> </div>
+                <div id="blue"> </div>
+                <div id="green"> </div>
+                <div id="red"> </div>
+                <div id="yellow"> </div>
+                <div id="orange"> </div>
+                <div id="purple"> </div>
+                <div id="pink"> </div>
+            </div>
+            <div id="guesses">
+                Make a guess: <input type="text" id="theGuess">
+            </div>
+        </div>
+        <div id="chat-box">
+            <div id="the-chat">
+                <ul id="chat-log">
+                </ul>
+            </div>
+            <div id="chat-enter">
+                <p id="chat"> Chat: </p>
+                <textarea id="words" type="text"></textarea>
+            </div>
+        </div>
+    </div>
+    <div id="word-box">
+        <div id="your-word"> Your word is: <span id="word-to-draw"></span> </div>
+        <div id="clear-canvas"> Clear Canvas </div>
+    </div>
+</div>
+</body>
+</html>
