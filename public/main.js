@@ -207,7 +207,7 @@ var addUserList = function(userName) {
 var initialUserList = function(userList) {
     // usersList.append(userList);
     userList.forEach(function(user) {
-        addUserList(user);
+        addUserList(user.userName);
     });
 };
 
@@ -271,13 +271,15 @@ var getDrawer = function(number, name) {
         userClass.addClass('star');    
         var userClass2 = $('.' + name);
         userClass2.removeClass('star');
+        seenDrawer = false;
     }
     else {
         drawer = false;
         $('#color-choices').hide();
         $('#guesses').show();
         $('#word-box').hide();
-        $('#usersList').children().removeClass('star');   
+        $('#usersList').children().removeClass('star'); 
+        seenDrawer = false;
     }
 };
 
@@ -305,9 +307,9 @@ $(document).ready(function() {
     pictionary();
     $('#user-name').show();
     
-    $(window).unload(function() {
-        socket.emit('userLeave', userName, userNumber, drawer);
-    });
+    //$(window).unload(function() {
+    //   socket.emit('userLeave', userName, userNumber, drawer);
+    //});
     
 });
 
