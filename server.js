@@ -9,6 +9,12 @@ var server = http.Server(app);
 var io = socket_io(server);
 
 var users = [];
+
+function User(userName, id) {
+    this.userName = userName;
+    this.id = id;
+}
+
 var usersConnected = 0;
 var currentDrawerNumber;
 var currentDrawer;
@@ -63,11 +69,17 @@ io.on('connection', function (socket) {
     socket.on('iAmDrawing', function(userName) {
         io.emit('theDrawer', userName);
         console.log(userName + " is drawing");
-        if(currentDrawer != userName) {
+        var userId;
+        for (var i=0; i<users.length; i++) {
+            if(users[i].userName == userName) {
+                userId = users[i].id;
+            }
+        }
+        if(currentDrawer != userId) {
             var random = Math.floor(Math.random() * 100);
             currentWord = words[random].toString();
             socket.emit('theWord', currentWord);
-            currentDrawer = userName;
+            currentDrawer = userId;
         }
     });
     
@@ -75,20 +87,22 @@ io.on('connection', function (socket) {
 		socket.broadcast.emit('startDrawing', event);
 	});
 	
-	socket.on('userLeave', function(userName, userNumber, drawer) {
-	    io.emit('removeUser', userName, userNumber);
-	    if(usersConnected >= 1) {
-	        usersConnected--;
-	    }
-	    for (var i = 0; i< users.length; i++) {
-	        if(users[i] == userName) {
+	socket.on('disconnect', function() {
+	    for(var i = 0; i<users.length; i++) {
+	        if(users[i].id == socket.id) {
+	            io.emit('removeUser', users[i].userName, i+1);
 	            users.splice(i, 1);
 	            console.log(users);
+	            break;
 	        }
 	    }
-	    if (drawer == true) {
-	        io.emit('needNewDrawer', userNumber);
+	    if(currentDrawer == socket.id) {
+	        io.emit('needNewDrawer', i+1);
+	        console.log(i+1);
 	    }
+	    usersConnected = users.length;
+	    console.log(usersConnected);
+	    
 	});
 	
 	socket.on('chat', function(message, userName) {
@@ -97,14 +111,21 @@ io.on('connection', function (socket) {
     
     socket.on('username', function(userName) {
         console.log(userName);
+        console.log(socket.id);
+        
+        var userId = socket.id;
+        var newUser = new User(userName, userId);
+        users.push(newUser);
+        console.log(users);
         usersConnected++;
         io.emit('addUserList', userName);
+        
         if(usersConnected == 1) {
             socket.emit('drawer');
             var random = Math.floor(Math.random() * 100);
             currentWord = words[random].toString();
             socket.emit('theWord', currentWord);
-            currentDrawer = userName;
+            currentDrawer = socket.id;
             currentDrawerNumber = 1;
         }
         else {
@@ -112,11 +133,6 @@ io.on('connection', function (socket) {
         }
         socket.emit('userNumber', usersConnected);
         io.emit('getDrawer');
-        users.push(userName);
-        //if(usersConnected == 4) {
-        //    socket.broadcast.emit('gameStart');
-        //    socket.emit('gameStart');
-        //}
         console.log(usersConnected);
         
     });
