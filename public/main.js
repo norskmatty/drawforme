@@ -4,7 +4,6 @@ var userName = '';
 var userCount = $('#users');
 var drawer = false;
 var seenDrawer = false;
-var userNumber = 0;
 
 var DrawPosition = function(offsetX, offsetY, color) {
 	this.offsetX = offsetX,
@@ -198,9 +197,7 @@ var pictionary = function() {
         lastEvent = new DrawPosition(event.offsetX, event.offsetY, color);
     }
     
-    $(window).unload(function() {
-        socket.emit('userLeave', userName, userNumber, drawer);
-    });
+
 };
 
 var addUserList = function(userName) {
@@ -307,6 +304,10 @@ var clearCanvas = function() {
 $(document).ready(function() {
     pictionary();
     $('#user-name').show();
+    
+    $(window).unload(function() {
+        socket.emit('userLeave', userName, userNumber, drawer);
+    });
     
 });
 
